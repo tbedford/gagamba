@@ -1,6 +1,3 @@
-# TODO:
-# Use HTML parser or something to process links
-
 import requests
 import re
 import sys
@@ -55,8 +52,7 @@ def crawl (link):
     links = get_links(link)
     for link in links:
         if link in visited:
-            if debug_mode:
-                print('Already visited --> ', link)
+            debug_print("Already visited --> {link}".format(link=link))
             continue
         visited.append(link)
         crawl(link)
