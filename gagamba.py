@@ -2,7 +2,7 @@
 # Exception handling for bad links (instead of timeout and crash, should go to next link)
 # Improve normalization code
 # Handle other links e.g. mailto:
-# Use HTML parsder or something to process links
+# Use HTML parser or something to process links
 # Use urlparse to parse or process links
 # Put page fetching in function with exception handling
 # Better logging write(f, msg) - where f could be stdout, file, stderr
@@ -10,11 +10,12 @@
 import requests
 import re
 import sys
+from urllib.parse import urljoin
 
 debug_mode = False
 
 if len(sys.argv) < 2:
-    print("Usage: spider.py base")
+    print("Usage: gagamba.py base")
     sys.exit()
 
 base = sys.argv[1]
@@ -27,46 +28,49 @@ def write_log(f, link, status):
     f.write(msg)
     f.flush()
 
-def write_console(msg):
+def debug_print(msg):
     if debug_mode:
         print(msg)
 
-# Needs to be better
 def normalize_link(link):
-    if link.startswith('http'):
-        return link
-    if link.startswith('/'):
-        return base + link
-    if link.startswith('./'):
-        return base + link[1:]
-    return base + '/' + link
+    debug_print("Link: --> {link}".format(link=link))
+    link = urljoin(base, link)
+    debug_print("Normalized link: --> {link}".format(link=link))
+    return link
+
+def get_page(link):
+    try:
+        r = requests.get(link)  
+        return r
+    except Exception as e:
+        print(e)
+        return None
 
 def get_links(link):
     msg = "Getting links on page --> {link}".format(link=link)
     print(msg)
     links = []
-    r = requests.get(link)
-    if r.status_code == 200:
-        regex = r'<a[\s\S]*?href=["\'](\S*?)["\']>'
-        m = re.findall(regex, r.text, re.MULTILINE)
-        # Normalize links and add to array
-        for link in m:
-            link = normalize_link(link)
-            if not link.startswith(base):
-                if debug_mode:
-                    print('Not our domain --> ', link)
-                continue
-            links.append(link)
-        # Remove duplicates
-        links = list(set(links))   
-    else:
-        print(r.status_code)
-        write_log(fout, link, r.status_code)
-    if debug_mode:
-        print("Links found --> ")
+    r = get_page(link)
+    if r:
+        if r.status_code == 200:
+            regex = r'<a[\s\S]*?href=["\'](\S*?)["\']>'
+            m = re.findall(regex, r.text, re.MULTILINE)
+            # Normalize links and add to array
+            for link in m:
+                link = normalize_link(link)
+                if not link.startswith(base):
+                    debug_print("Not our domain --> {link}".format(link=link))
+                    continue
+                links.append(link)
+            # Remove duplicates
+            links = list(set(links))   
+        else:
+            print(r.status_code)
+            write_log(fout, link, r.status_code)
+        debug_print("Links found --> ")
         for link in links:
-            print("-- DEBUG --> ", link)
-        print("--------")
+            debug_print("-- DEBUG --> {link}".format(link=link))
+        debug_print("--------")
     return links
 
 def crawl (link):
