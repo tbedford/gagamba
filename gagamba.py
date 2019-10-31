@@ -28,26 +28,29 @@ def normalize_link(link):
     return urljoin(base, link)
 
 def get_links(link):
-    msg = "Getting links on page --> {link}".format(link=link)
-    print(msg)
     links = []
-    r = requests.get(link)
-    if r.status_code == 200:
-        parser.feed(r.text)
-        m = parser.links
-        for link in m:
-            link = normalize_link(link)
-            if not link.startswith(base):
-                debug_print("Not our domain --> {link}".format(link=link))
-                continue
-            links.append(link)
-        links = list(set(links))  # Remove duplicates
-    else:
+    try:
+        headers = {'user-agent': 'gagamba/0.0.1'}
+        r = requests.get(link, headers=headers)
         print(r.status_code)
-        write_log(fout, link, r.status_code)
+        if r.status_code == 200:
+            if link.startswith(base): # We do want to check offsite links, but we don't want to crawl them
+                parser.feed(r.text)
+                m = parser.links
+                for link in m:
+                    link = normalize_link(link)
+                    links.append(link)
+                links = list(set(links))  # Remove duplicates
+        else:
+            write_log(fout, link, r.status_code)
+    except Exception as e:
+        print("FATAL")
+        write_log(fout, link, "FATAL EXCEPTION")
     return links
 
 def crawl (link):
+    msg = "Checking page --> {link} -- ".format(link=link)
+    print(msg, end='')
     links = get_links(link)
     for link in links:
         if link in visited:
@@ -68,9 +71,9 @@ if len(sys.argv) < 2:
 base = sys.argv[1]
 print("Crawling from base --> ", base)
 visited = []
-filename = "404.log"
+filename = "errors.log"
 
 fout = open(filename, "w")
 crawl(base)
-print("Number of pages visited: --> ", len(visited))
+print("Number of pages checked: --> ", len(visited))
 fout.close()
