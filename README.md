@@ -18,4 +18,7 @@ m = re.findall(regex, r.text, re.MULTILINE)
 
 ## TODO
 
+- [ ]
 - [x] Use HTML parser or something to process links (my regex is probably not robust)
+- [x] Add checks for links that point offsite but do not crawl them
+- [x] Add exception handling because some sites cause an exception rather than returning an error code. For example if the site doesn;t          exist.
