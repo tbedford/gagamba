@@ -37,6 +37,7 @@ def get_links(link):
                 for link in m:
                     link = urljoin(base, link)
                     links.append(link)
+                    debug_print(link)
                 links = list(set(links))  # Remove duplicates
         else:
             write_log(fout, link, r.status_code)
@@ -72,5 +73,5 @@ filename = "errors.log"
 
 fout = open(filename, "w")
 crawl(base)
-print("Number of pages checked: --> ", len(visited))
+print("Number of links checked: --> ", len(visited))
 fout.close()
