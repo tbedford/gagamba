@@ -24,9 +24,6 @@ def debug_print(msg):
     if debug_mode:
         print(msg)
 
-def normalize_link(link):
-    return urljoin(base, link)
-
 def get_links(link):
     links = []
     try:
@@ -38,7 +35,7 @@ def get_links(link):
                 parser.feed(r.text)
                 m = parser.links
                 for link in m:
-                    link = normalize_link(link)
+                    link = urljoin(base, link)
                     links.append(link)
                 links = list(set(links))  # Remove duplicates
         else:
