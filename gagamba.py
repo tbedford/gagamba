@@ -43,7 +43,7 @@ def get_links(link):
             write_log(fout, link, r.status_code)
     except Exception as e:
         print("FATAL")
-        write_log(fout, link, "FATAL EXCEPTION")
+        write_log(fout, link, "FATAL EXCEPTION") # Only log errors
     return links
 
 def crawl (link):
@@ -52,7 +52,6 @@ def crawl (link):
     links = get_links(link)
     for link in links:
         if link in visited:
-            debug_print("Already visited --> {link}".format(link=link))
             continue
         visited.append(link)
         crawl(link)
@@ -70,8 +69,6 @@ base = sys.argv[1]
 print("Crawling from base --> ", base)
 visited = []
 filename = "errors.log"
-
-fout = open(filename, "w")
-crawl(base)
-print("Number of links checked: --> ", len(visited))
-fout.close()
+with open(filename, "w") as fout:
+    crawl(base)
+    print("Number of links checked: --> ", len(visited))
