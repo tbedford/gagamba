@@ -18,6 +18,7 @@ m = re.findall(regex, r.text, re.MULTILINE)
 
 ## TODO
 
+- [ ] Stack overflow due to too many levels of recursion when spidering NDP
 - [ ] Try to make it work locally - this would be a lot faster https://localhost:3000
 - [x] Use HTML parser or something to process links (my regex is probably not robust)
 - [x] Add checks for links that point offsite but do not crawl them
