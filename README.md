@@ -18,7 +18,7 @@ m = re.findall(regex, r.text, re.MULTILINE)
 
 ## TODO
 
-- [ ] Check for broken images
+- [ ] Check for missing images
 - [ ] Stack overflow due to too many levels of recursion when spidering NDP
 - [x] Try to make it work locally - this would be a lot faster https://localhost:3000
 - [x] Use HTML parser or something to process links (my regex is probably not robust)
