@@ -4,9 +4,10 @@ import sys
 from urllib.parse import urljoin
 from html.parser import HTMLParser
 
-# run as sudo if you want unlimited stack
-#import resource
-#resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+# run as sudo if you want unlimited stack (but I think is limited by hard limits)
+# See also: Mac OS X ulimit -s 65532 (sets stack size in Bash)
+# import resource
+# resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
 
 class MyHTMLParser(HTMLParser):
 
@@ -18,16 +19,25 @@ class MyHTMLParser(HTMLParser):
             for a in attrs:
                 if a[0] == 'href':
                     self.links.append(a[1])
-
+        return
+    
 def write_log(f, link, status):
     msg = "{link} -- {status}\n".format(link=link, status=status)
     f.write(msg)
     f.flush()
+    return
 
 def debug_print(msg):
     if debug_mode:
         print(msg)
+    return
 
+def debug_print_file(f, msg):
+    if debug_mode:
+        f.write(msg)
+        f.flush()
+    return
+        
 def get_links(link):
     links = []
     try:
@@ -59,7 +69,8 @@ def crawl (link):
             continue
         visited.append(link)
         crawl(link)
-
+    return
+        
 #######    MAIN    ########
 
 debug_mode = False
@@ -72,7 +83,7 @@ if len(sys.argv) < 2:
 base = sys.argv[1]
 print("Crawling from base --> ", base)
 visited = []
-filename = "errors.log"
-with open(filename, "w") as fout:
+error_file = "errors.log"
+with open(error_file, "w") as fout:
     crawl(base)
     print("Number of links checked: --> ", len(visited))
