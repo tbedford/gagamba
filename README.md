@@ -2,6 +2,10 @@
 
 Simple spider to check for bad links (404s etc.)
 
+## Blog post
+
+See [this article](https://tonys-notebook.com/articles/python-web-spider.html) for more information.
+
 ## Rough notes kept during development
 
 ``` python
