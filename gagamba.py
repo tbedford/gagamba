@@ -4,6 +4,10 @@ import sys
 from urllib.parse import urljoin
 from html.parser import HTMLParser
 
+# run as sudo if you want unlimited stack
+#import resource
+#resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+
 class MyHTMLParser(HTMLParser):
 
     links = []
