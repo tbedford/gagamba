@@ -6,8 +6,9 @@ from html.parser import HTMLParser
 
 # run as sudo if you want unlimited stack (but I think is limited by hard limits)
 # See also: Mac OS X ulimit -s 65532 (sets stack size in Bash)
-# import resource
-# resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+#import resource
+#resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY, resource.RLIM_INFINITY))
+#resource.setrlimit(resource.RLIMIT_STACK, (65532, 65532))
 
 class MyHTMLParser(HTMLParser):
 
