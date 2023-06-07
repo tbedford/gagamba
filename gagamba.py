@@ -62,6 +62,7 @@ def get_links(link):
     return links
 
 def crawl (link):
+    global visited
     msg = "Checking page --> {link} -- ".format(link=link)
     print(msg, end='')
     links = get_links(link)
